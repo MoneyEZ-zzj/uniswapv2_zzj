@@ -1,0 +1,9 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc = "0.8.20"
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+viaIR = true
+[rpc_endpoints]
+sepolia = "https://sepolia.infura.io/v3/25dea79e22ec4e00ad658a9a9bda50b1"
