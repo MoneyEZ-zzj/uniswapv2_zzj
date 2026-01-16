@@ -15,27 +15,36 @@ import {Test, console} from "../lib/forge-std/src/Test.sol";
 
 contract UniswapV2Router02 is IUniswapV2Router02, Test {
 
-    address private immutable _factory;
-    address private immutable _WETH;
+    // 1. 只能在构造函数中赋值一次
+    // 2. 赋值后不能修改
+    // 3. Gas 优化：不占用 storage slot，直接嵌入字节码
+    // 4. 比 constant 灵活（constant 必须在编译时确定）
+    address private immutable _factory; // 工厂合约地址
+    address private immutable _WETH;    // WETH合约地址
 
-    modifier ensure(uint deadline) {
+    // deadline 修饰符，确保交易在指定时间内完成，防止交易被延迟执行
+    modifier ensure(uint deadline) {                                
         require(deadline >= block.timestamp, 'UniswapV2Router: EXPIRED');
         _;
     }
 
+    // 构造函数，初始化工厂合约地址和WETH合约地址
     constructor(address factory_, address weth_) {
         _factory = factory_;
         _WETH = weth_;
     }
 
+    // 返回WETH合约地址
     function WETH() public view returns (address) {
         return _WETH;
     }
 
+    // 返回工厂合约地址
     function factory() public view returns (address) {
         return _factory;
     }
-
+    
+    // 接收ETH的回退函数，只允许WETH合约发送ETH
     receive() external payable {
         assert(msg.sender == WETH()); // only accept ETH via fallback from the WETH contract
     }
